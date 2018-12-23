@@ -1,16 +1,30 @@
-console.log('app running!')
-
 const _ = require('lodash')
 const yargs = require('yargs')
 
 const notes = require('./notes')
 
-const argv = yargs.argv
+const title = {
+    describe: 'title of the note',
+    demand: true,
+    alias: 't'
+}
+
+const body = {
+  describe: 'body of the note',
+  demand: true,
+  alias: 'b'
+}
+
+//commands and there description
+const argv = yargs.command('read', 'read specific note note', {
+  title
+}).command('add', 'add new note', {
+  title,
+  body
+}).command('remove', 'delete a note', {
+  title
+}).command('list', 'list add notes').help().argv
 const command = argv._[0]
-
-console.log("yargs ", argv)
-
-console.log('command')
 
 if(command === 'add'){
   var note = notes.addNote(argv.title, argv.body);
@@ -25,9 +39,9 @@ if(command === 'add'){
 
 else if(command === 'remove'){
 
-  var title = notes.removeNote(argv.title)
-  if(title){
-    console.log(`Note with title: ${title} removed!`)
+  var noteTitle = notes.removeNote(argv.title)
+  if(noteTitle){
+    console.log(`Note with note: ${noteTitle} removed!`)
   }
   else{
     console.log(`title: ${argv.title}  is not available in the note`)
@@ -45,7 +59,9 @@ else if(command === 'read'){
 }
 
 else if(command === 'list'){
-  notes.getAllNote()
+  var allNotes = notes.getAllNote()
+  console.log(`listing: ${allNotes.length} notes`);
+  allNotes.forEach( (note) => notes.logNote(note));
 }
 else{
   console.log('command not recognized')

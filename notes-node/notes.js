@@ -1,5 +1,3 @@
-console.log('note app running!')
-
 const fs = require('fs')
 
 var fetchNote = () => {
@@ -58,14 +56,16 @@ var getNote = (title) => {
 }
 
 var getAllNote = () => {
-  console.log("getting all notes")
+  //return all notes
+  return fetchNote();
 }
 
 var logNote = (note) => {
   console.log('---')
-  console.log(note.title)
-  console.log(note.body)
+  console.log(`title: ${note.title}`)
+  console.log(`body: ${note.body}`)
 }
+
 
 
 
