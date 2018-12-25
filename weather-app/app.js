@@ -8,7 +8,8 @@ var arg = yargs
     demandOption: true,
     alias: 'a',
     describe: 'address to fetch weather',
-    string: true
+    string: true,
+    default: 'Addis ababa'
   }
 })
 .help()
