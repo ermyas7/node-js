@@ -16,14 +16,20 @@ const body = {
 }
 
 //commands and there description
-const argv = yargs.command('read', 'read specific note note', {
+const argv = yargs
+.command('read', 'read specific note note', {
   title
-}).command('add', 'add new note', {
+})
+.command('add', 'add new note', {
   title,
   body
-}).command('remove', 'delete a note', {
+})
+.command('remove', 'delete a note', {
   title
-}).command('list', 'list add notes').help().argv
+})
+.command('list', 'list add notes')
+.help()
+.argv
 const command = argv._[0]
 
 if(command === 'add'){
