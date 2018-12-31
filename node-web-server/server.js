@@ -1,14 +1,31 @@
 const express = require('express')
 const hbs = require('hbs')
-const app = express()
+const fs = require('fs')
 
+const app = express()
 hbs.registerPartials(__dirname+'/views/partials')
 hbs.registerHelper('getCurrentYear', () => {
   return new Date().getFullYear()
 })
+//should be at the top of all middlewares to prevent static pages displaying
+// app.use((req, res, next) => {
+//   res.render('maintenance')
+// })
 app.use(express.static(__dirname + '/public'))
 app.set('view engine', 'hbs')
 
+//middleware
+app.use((req, res, next) => {
+  let now = new Date().toString()
+  let log = `${now} : url ${req.url} : method ${req.method}`
+  console.log(log)
+  fs.appendFile('server.log', log + '\n' , err => {
+    if(err){
+      console.log(err)
+    }
+  } )
+  next()
+})
 
 app.get('/', (req, res) => {
   res.render('home', {
