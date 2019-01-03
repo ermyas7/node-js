@@ -18,13 +18,14 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', { useNewUrlParser: true
   // })
   db.collection('User').insertOne(
     {
-      name: 'Ermyas',
-      age: 23,
-      location: 'Silchar'
+      name: 'Tensae',
+      age: 11,
+      location: 'Injibara'
   }, (err, result) => {
     if(err){
       return console.log('Unable to create user collection!');
     }
     console.log(JSON.stringify(result.ops, undefined, 2));
+    client.close();
   })
 })
