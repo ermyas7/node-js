@@ -8,13 +8,18 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-  res.send('testing')
-})
-
 app.post('/todos', (req, res) => {
-  console.log(req.body.text)
-  res.send(req.body.text)
+  var newTodo = new Todo({
+    text: req.body.text
+  });
+  newTodo.save().then((doc) => {
+    res.send(doc)
+  }, (err) => {
+    res.status(400).send(err)
+  })
+
 })
 
 app.listen(3000, () => console.log('server running on port 3000'));
+
+module.exports = {app};
