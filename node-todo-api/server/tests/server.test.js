@@ -55,10 +55,14 @@ beforeEach((done) => {
       });
 
       describe('Get /todos', () => {
-        it('should return all todos', () => {
+        it('should return all todos', (done) => {
           request(app).get('/todos')
-          .expect(200).expect((res) => {
-
+          .expect(200).end((err, res) => {
+            if(err){
+              return done(err);
+            }
+            expect(res.body.todos.length).toBe(2);
+            done();
           })
         })
       })

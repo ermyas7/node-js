@@ -23,7 +23,7 @@ app.post('/todos', (req, res) => {
 
 //get all todos
 app.get('/todos', (req, res) => {
-  Todo.find().then((todos) => {
+  Todos.find().then((todos) => {
     res.send({
       todos
     })
