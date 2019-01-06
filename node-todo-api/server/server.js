@@ -8,6 +8,7 @@ const app = express();
 
 app.use(bodyParser.json());
 
+//add new todo
 app.post('/todos', (req, res) => {
   var newTodo = new Todo({
     text: req.body.text
@@ -16,9 +17,9 @@ app.post('/todos', (req, res) => {
     res.send(doc)
   }, (err) => {
     res.status(400).send(err)
-  })
+  });
 
-})
+});
 
 app.listen(3000, () => console.log('server running on port 3000'));
 
