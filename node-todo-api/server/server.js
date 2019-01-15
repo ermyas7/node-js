@@ -19,11 +19,11 @@ app.post('/todos', (req, res) => {
   }, (err) => {
     res.status(400).send(err)
   });
-
 });
 
 //get all todos
 app.get('/todos', (req, res) => {
+  console.log('get all!')
   Todo.find().then((todos) => {
     res.send({
       todos
@@ -45,7 +45,7 @@ app.get('/todos/:id', (req, res) => {
       console.log('no todo');
       return res.status(404).send();
     }
-
+    
     res.send({todo});
 
   }).catch((err) => {

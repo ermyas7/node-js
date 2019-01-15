@@ -1,22 +1,32 @@
 const expect   = require('expect'),
+      {ObjectID} = require('mongodb'),
       request  = require('supertest');
 
 const {User} = require('../models/user'),
       {Todo} = require('../models/todo'),
       {app}  = require('../server');
 
-const testTodos = [
-  {text: 'add grid'},
-  {text: 'add responsive nav'}
+const Todos = [
+  {
+    _id: new ObjectID(),
+    text: 'add grid'
+  },
+  {
+    _id: new ObjectID(),
+    text: 'add responsive nav'
+  }
 ];
 
 beforeEach((done) => {
   Todo.deleteMany({})
   .then(() => {
-     Todo.insertMany(testTodos);
+     Todo.insertMany(Todos);
   }).then((res) => done());
 })
+
+    //test POST /todos
       describe('Post /todos', () => {
+
         it('should create a new todo',  (done) => {
             var text = 'some test text';
             request(app).post('/todos').send({text})
@@ -54,7 +64,9 @@ beforeEach((done) => {
         })
       });
 
+      //test GET /todos
       describe('Get /todos', () => {
+
         it('should return all todos', (done) => {
           request(app).get('/todos')
           .expect(200).end((err, res) => {
@@ -65,4 +77,35 @@ beforeEach((done) => {
             done();
           })
         })
+
+      })
+
+      //test GET /todos/:// id
+      describe('GET /todos/:id', () => {
+
+        it('should return todo doc', (done) => {
+          request(app)
+            .get(`/todos/${Todos[0]._id}`)
+            .expect(200)
+            .end((err, res) => {
+              if(err){
+                done(err);
+              }
+              expect(res.body.todo.text).toBe(Todos[0].text)
+              done();
+            })
+        })
+
+        it('should return 404 if todo not found', done => {
+          request(app).get(`/todos/${new ObjectID}`)
+          .expect(404)
+          .end(done);
+        })
+        
+        it('should return 404 for none object id', done => {
+          request(app).get('/todos/1212')
+          .expect(404)
+          .end(done);
+        })
+
       })
