@@ -101,8 +101,8 @@ beforeEach((done) => {
           .expect(404)
           .end(done);
         })
-        
-        it('should return 404 for none object id', done => {
+
+        it('should return 404 for non-object id', done => {
           request(app).get('/todos/1212')
           .expect(404)
           .end(done);
