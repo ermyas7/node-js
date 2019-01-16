@@ -1,14 +1,8 @@
 const mongoose = require('mongoose');
 //set mongoose to return a global Promise
 mongoose.Promise = global.Promise
-const option = {
-    keepAlive: 300000,
-     connectTimeoutMS: 30000,
-    useNewUrlParser: true
-};
-
-const mongoURI = 'mongodb://127.0.0.1:27017/TodoApp';
-mongoose.connect(mongoURI, option).then(function(){
+const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/TodoApp';
+mongoose.connect(mongoURI, {useNewUrlParser: true}).then(function(){
     //connected successfully
 }, function(err) {
     //err handle
