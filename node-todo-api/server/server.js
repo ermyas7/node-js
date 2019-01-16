@@ -32,18 +32,16 @@ app.get('/todos', (req, res) => {
   }).catch((err) => res.status(400).send(err));
 })
 
-//search for specific todo using id
+//get specific todo using id
 app.get('/todos/:id', (req, res) => {
   let id = req.params.id;
 
   if(!ObjectID.isValid(id)){
-    console.log('invalid id');
     return res.status(404).send();
   }
 
   Todo.findById(id).then((todo) => {
     if(!todo){
-      console.log('no todo');
       return res.status(404).send();
     }
 
@@ -54,6 +52,22 @@ app.get('/todos/:id', (req, res) => {
   })
 
 });
+
+//delete specific todo
+app.delete('/todos/:id', (req, res) => {
+  let id = req.params.id
+  if(!ObjectID.isValid(id)){
+    res.status(404).send();
+  }
+
+  Todo.findByIdAndDelete(id).then(doc => {
+    if(!doc){
+      res.status(404).send();
+    }
+    res.send({doc});
+  })
+  .catch(err => res.status(400).send());
+})
 
 
 app.listen(PORT, () => console.log(`server running on port 3000`));
