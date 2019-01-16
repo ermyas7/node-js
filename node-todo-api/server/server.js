@@ -60,11 +60,11 @@ app.delete('/todos/:id', (req, res) => {
     res.status(404).send();
   }
 
-  Todo.findByIdAndDelete(id).then(doc => {
-    if(!doc){
+  Todo.findByIdAndDelete(id).then(todo => {
+    if(!todo){
       res.status(404).send();
     }
-    res.send({doc});
+    res.send({todo});
   })
   .catch(err => res.status(400).send());
 })
