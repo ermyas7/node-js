@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 //set mongoose to return a global Promise
 mongoose.Promise = global.Promise
-const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/TodoApp';
+const mongoURI = process.env.MONGODB_URI;
 mongoose.connect(mongoURI, {useNewUrlParser: true}).then(function(){
     //connected successfully
 }, function(err) {
