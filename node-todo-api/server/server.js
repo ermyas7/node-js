@@ -5,8 +5,9 @@ const {ObjectID} = require('mongodb')
 const express = require('express')
 const bodyParser = require('body-parser')
 
-const {Todo}   = require('./models/todo')
-const {User}   = require('./models/user')
+var {Todo}   = require('./models/todo');
+var {User}   = require('./models/user');
+var {authenticate} = require('./middleware/authenticate');
 const PORT = process.env.PORT;
 
 const app = express();
@@ -117,6 +118,18 @@ app.post('/users', (req, res) => {
     res.status(400).send(err)
   })
 })
+
+//////////////////////////////////////////////
+///////////////login user route  ////////////
+////////////////////////////////////////////
+
+
+
+app.get('/users/me',authenticate, (req, res) => {
+  let user = req.user;
+    res.send(user)
+  })
+
 app.listen(PORT, () => console.log(`server running on port 3000`));
 
 module.exports = {app};

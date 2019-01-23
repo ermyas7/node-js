@@ -38,6 +38,8 @@ var UserSchema = mongoose.Schema(
   }
 );
 
+
+
 UserSchema.methods.generateAuthToken = function(){
   var user = this;
   //set token access
@@ -60,6 +62,23 @@ UserSchema.methods.toJSON = function(){
   var userObject = user.toObject();
   return _.pick(userObject, ['_id', 'email'])
 
+}
+
+UserSchema.statics.findByToken = function(token){
+  var User = this;
+  var decoded;
+  try{
+    decoded = jwt.verify(token, 'somesecret');
+  }
+  catch(err){
+    return Promise.reject()
+  }
+
+  return User.findOne({
+        '_id': decoded._id,
+        'tokens.access': 'auth',
+        'tokens.token': token
+  });
 }
 
 var User = mongoose.model('User',UserSchema);
