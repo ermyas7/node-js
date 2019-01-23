@@ -1,30 +1,14 @@
-const expect   = require('expect'),
-      {ObjectID} = require('mongodb'),
-      request  = require('supertest');
+const expect      = require('expect');
+const {ObjectID}  = require('mongodb');
+const request     = require('supertest');
 
-const {User} = require('../models/user'),
-      {Todo} = require('../models/todo'),
-      {app}  = require('../server');
+const {User} = require('../models/user');
+const {Todo} = require('../models/todo');
+const {app}  = require('../server');
+const {todos, populateTodos, users, populateUsers} = require('./seed/seed');
 
-const Todos = [
-  {
-    _id: new ObjectID(),
-    text: 'add grid'
-  },
-  {
-    _id: new ObjectID(),
-    text: 'add responsive nav',
-    completed: true,
-    completedAt: 555
-  }
-];
-
-beforeEach((done) => {
-  Todo.deleteMany({})
-  .then(() => {
-     Todo.insertMany(Todos);
-  }).then((res) => done());
-})
+beforeEach(populateUsers);
+beforeEach(populateTodos);
 
     //test POST /todos
       describe('Post /todos', () => {
@@ -87,13 +71,13 @@ beforeEach((done) => {
 
         it('should return todo doc', (done) => {
           request(app)
-            .get(`/todos/${Todos[0]._id}`)
+            .get(`/todos/${todos[0]._id}`)
             .expect(200)
             .end((err, res) => {
               if(err){
                 done(err);
               }
-              expect(res.body.todo.text).toBe(Todos[0].text)
+              expect(res.body.todo.text).toBe(todos[0].text)
               done();
             })
         })
@@ -116,7 +100,7 @@ beforeEach((done) => {
       describe('DELETE /todo/:id', () => {
 
         it('should remove a todo', done => {
-          let id = Todos[1]._id.toString();
+          let id = todos[1]._id.toString();
           request(app).delete(`/todos/${id}`)
           .expect(200)
           .expect(res => {
@@ -150,7 +134,7 @@ beforeEach((done) => {
       describe('PATCH /todos/:id', () => {
 
         it('should update todo', done => {
-          let id = (Todos[0]._id).toString()
+          let id = (todos[0]._id).toString()
           let testTodo = {text: 'testing text', completed: true}
             request(app).patch(`/todos/${id}`)
             .send(testTodo)
@@ -168,7 +152,7 @@ beforeEach((done) => {
 
         it('should clear completedAt when to do is not completed', done => {
           let testTodo = {text: 'testing two', completed: false}
-          let id = (Todos[1]._id).toString()
+          let id = (todos[1]._id).toString()
           request(app).patch(`/todos/${id}`)
           .send(testTodo)
           .expect(200)
@@ -181,5 +165,92 @@ beforeEach((done) => {
             expect(res.body.todo.completedAt).toBeFalsy()
             done()
           })
+        })
+      })
+
+      ///////////////////////////////////////////
+      ////////////// login /////////////////////
+      /////////////////////////////////////////
+
+      describe('GET /users/me', () => {
+
+        it('should return user if authenticated', done => {
+
+          request(app).get('/users/me').set('x-auth', users[0].tokens[0].token)
+          .expect(200)
+          .expect(res =>{
+            expect(res.body._id).toBe(users[0]._id.toHexString())
+            expect(res.body.email).toBe(users[0].email)
+          })
+          .end(done)
+
+        })
+
+        it('should return 401 if not authorized', done => {
+          request(app).get('/users/me')
+          .expect(401)
+          .expect(res => {
+            expect(res.body).toEqual({});
+          })
+          .end(done)
+        })
+
+      })
+
+      //////////////////////////////////////////////
+      ///////////// SignUp ////////////////////////
+      ////////////////////////////////////////////
+      describe('POST /users', () => {
+
+        it('should create a new user', done => {
+          var email = 'test@example.com';
+          var password  = 'pass123';
+          request(app)
+          .post('/users')
+          .send({email, password})
+          .expect(200)
+          .expect(res => {
+            expect(res.headers['x-auth']).toExist();
+            expect(res.body._id).toExist();
+          })
+          .end(err => {
+            if(err){
+              done(err)
+            }
+
+            User.findOne({email})
+            .then(user => {
+              expect(user).toExist();
+              expect(user.password).toNotEqual(password);
+              done()
+            }).catch(err => done(err))
+
+          })
+
+        })
+
+        it('should return validation error if requested invalid', done => {
+
+          request(app)
+          .post('/users')
+          .send({
+            email: 'ermsd'
+            , password: 'pas'
+          })
+          .expect(400)
+          .end(done)
+        })
+
+        it('should not create user if email in use', done => {
+
+          request(app)
+          .post('/users')
+          .send(
+            {
+              email: users[0].email,
+               password: 'pasggg'
+             })
+          .expect(400)
+          .end(done)
         })
       })
