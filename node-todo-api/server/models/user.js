@@ -40,7 +40,7 @@ var UserSchema = mongoose.Schema(
 );
 
 
-
+//generate token on success
 UserSchema.methods.generateAuthToken = function(){
   var user = this;
   //set token access
@@ -65,6 +65,16 @@ UserSchema.methods.toJSON = function(){
   return _.pick(userObject, ['_id', 'email'])
 
 }
+
+
+//remove existing token/ destroy token
+UserSchema.methods.removeToken = function(token){
+  var user = this;
+  return user.updateOne({
+    $pull:{tokens: {token}}
+  })
+}
+
 
 
 //find user using token
