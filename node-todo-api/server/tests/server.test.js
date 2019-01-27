@@ -176,7 +176,8 @@ beforeEach(populateTodos);
 
         it('should return user if authenticated', done => {
 
-          request(app).get('/users/me').set('x-auth', users[0].tokens[0].token)
+          request(app).get('/users/me')
+          .set('x-auth', users[0].tokens[0].token)
           .expect(200)
           .expect(res =>{
             expect(res.body._id).toBe(users[0]._id.toHexString())
@@ -323,6 +324,34 @@ describe('POST /users/login', () => {
         .catch(err => done(err))
 
       })
+    })
+
+  })
+
+
+  //////////////////////////////////////////
+  /////// test /users/me/token route ///////
+  /////////////////////////////////////////
+  describe('DELETE /users/me/token', () => {
+
+    it('should remove auth token on logout', (done) => {
+        request(app)
+        .delete('/users/me/token')
+        .set('x-auth', users[0].tokens[0].token)
+        .expect(200)
+        .end((err, res) => {
+          if(err){
+            done(err)
+          }
+
+          User.findById(users[0]._id)
+          .then((user) => {
+            expect(user.tokens.length).toBe(0);
+            done()
+          })
+          .catch(err => done(err))
+
+        })
     })
 
   })
