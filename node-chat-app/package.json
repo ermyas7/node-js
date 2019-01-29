@@ -1,0 +1,26 @@
+{
+  "name": "chat-app",
+  "version": "1.0.0",
+  "description": "real time node.js and socket.io chat app",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engine":{
+    "node": "9.8.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ermyas7/node-js.git"
+  },
+  "author": "Ermyas Fekadu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ermyas7/node-js/issues"
+  },
+  "homepage": "https://github.com/ermyas7/node-js#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
