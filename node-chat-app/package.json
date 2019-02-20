@@ -7,7 +7,7 @@
     "start": "node server/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "engine":{
+  "engine": {
     "node": "9.8.0"
   },
   "repository": {
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/ermyas7/node-js#readme",
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "socket.io": "^2.2.0"
   }
 }
